@@ -213,6 +213,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .search-icon { color: var(--accent); font-size: 24px; }
 
 .search-form input {
+    width: 90%;
     min-width: 0;
     flex: 1;
     padding: 9px 0;
