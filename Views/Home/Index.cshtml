@@ -1,0 +1,334 @@
+@model MusicLab.Web.ViewModels.MusicLabViewModel
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="music-page">
+    <header class="content-topbar">
+        <div>
+            <p class="eyebrow">TU MÚSICA, TU ESPACIO</p>
+            <span class="local-badge"><span class="status-dot"></span> Biblioteca local</span>
+        </div>
+
+        <form method="get" asp-controller="Home" asp-action="Index"
+              class="search-form" id="buscar">
+            <span class="search-icon">⌕</span>
+            <input type="search" name="buscar"
+                   value="@Model.Busqueda"
+                   placeholder="¿Qué quieres escuchar?" />
+            <button type="submit">Buscar</button>
+        </form>
+    </header>
+
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <p class="eyebrow">MUSICLAB · CYAN EDITION</p>
+            <h1>Tu música.<br /><span>Tu universo.</span></h1>
+            <p class="description">
+                Toda tu biblioteca musical en un solo lugar.
+                Organizada y reproducida desde tu ordenador.
+            </p>
+            <a class="hero-button" href="#canciones">♫ Explorar canciones</a>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+            <div class="hero-disc">
+                <div class="disc-center">M</div>
+            </div>
+            <span class="sound-wave wave-one"></span>
+            <span class="sound-wave wave-two"></span>
+            <span class="sound-wave wave-three"></span>
+        </div>
+    </section>
+
+    <section class="content-section" id="canciones">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">TU COLECCIÓN</p>
+                <h2>@(string.IsNullOrWhiteSpace(Model.Busqueda) ? "Todas las canciones" : "Resultados de búsqueda")</h2>
+                <p class="section-subtitle">@Model.Biblioteca.Count canciones encontradas</p>
+            </div>
+        </div>
+
+        @if (Model.Biblioteca.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="empty-icon">♫</div>
+                <h3>No encontramos canciones</h3>
+                <p>
+                    Coloca archivos MP3 en <code>wwwroot\music</code>
+                    y recarga la página.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="song-table">
+                <div class="song-table-header">
+                    <span>#</span>
+                    <span>CANCIÓN</span>
+                    <span>ÁLBUM</span>
+                    <span>ACCIÓN</span>
+                </div>
+
+                @foreach (var cancion in Model.Biblioteca)
+                {
+                    <article class="song-row">
+                        <span class="song-number">@cancion.Id</span>
+
+                        <div class="song-cell">
+                            <img class="cover" src="@cancion.Portada" alt="" />
+                            <div class="song-info">
+                                <h3>@cancion.Titulo</h3>
+                                <p>@cancion.Artista</p>
+                            </div>
+                        </div>
+
+                        <span class="album-cell">@cancion.Album</span>
+
+                        <form method="post" asp-controller="Home"
+                              asp-action="AgregarAColaApi" class="add-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@cancion.Id" />
+                            <button class="add-button" type="submit"
+                                    title="Agregar a la cola" aria-label="Agregar @cancion.Titulo a la cola">+</button>
+                        </form>
+                    </article>
+                }
+            </div>
+        }
+    </section>
+
+    <section class="content-section" id="albumes">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">POR COLECCIONES</p>
+                <h2>Álbumes</h2>
+                <p class="section-subtitle">Agrupados según los nombres de tus archivos</p>
+            </div>
+        </div>
+
+        @{
+            var albumes = Model.Biblioteca
+                .GroupBy(c => string.IsNullOrWhiteSpace(c.Album) ? "Sin álbum" : c.Album)
+                .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
+        @if (albumes.Count == 0)
+        {
+            <p class="muted">Tus álbumes aparecerán cuando agregues canciones.</p>
+        }
+        else
+        {
+            <div class="album-grid">
+                @foreach (var album in albumes)
+                {
+                    <a class="album-card"
+                       href="@Url.Action("Index", "Home", new { album = album.Key, buscar = Model.Busqueda })">
+                        <div class="album-art">
+                            <span>♫</span>
+                            <div class="album-art-caption">MUSICLAB</div>
+                        </div>
+                        <h3>@album.Key</h3>
+                        <p>@(album.Count()) canciones</p>
+                    </a>
+                }
+            </div>
+        }
+    </section>
+
+    @if (!string.IsNullOrWhiteSpace(Model.AlbumSeleccionado))
+    {
+        <section class="content-section" id="detalle-album">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">COLECCIÓN SELECCIONADA</p>
+                    <h2>@Model.AlbumSeleccionado</h2>
+                    <p class="section-subtitle">
+                        @Model.CancionesAlbum.Count canciones
+                    </p>
+                </div>
+                <a class="hero-button" href="@Url.Action("Index", "Home", new { buscar = Model.Busqueda })">
+                    Volver a la biblioteca
+                </a>
+            </div>
+
+            @if (Model.CancionesAlbum.Count == 0)
+            {
+                <p class="muted">No hay canciones en este álbum.</p>
+            }
+            else
+            {
+                <div class="song-table">
+                    <div class="song-table-header">
+                        <span>#</span>
+                        <span>CANCIÓN</span>
+                        <span>ARTISTA</span>
+                        <span>ACCIONES</span>
+                    </div>
+
+                    @foreach (var cancion in Model.CancionesAlbum)
+                    {
+                        <article class="song-row">
+                            <span class="song-number">@cancion.Id</span>
+                            <div class="song-cell">
+                                <img class="cover" src="@cancion.Portada" alt="" />
+                                <div class="song-info">
+                                    <h3>@cancion.Titulo</h3>
+                                    <p>@cancion.Artista</p>
+                                </div>
+                            </div>
+                            <span class="album-cell">@cancion.Artista</span>
+
+                            <div class="album-actions">
+                                <form method="post" asp-controller="Home"
+                                      asp-action="ReproducirApi" class="add-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@cancion.Id" />
+                                    <button class="add-button" type="submit"
+                                            title="Reproducir ahora"
+                                            aria-label="Reproducir @cancion.Titulo">▶</button>
+                                </form>
+
+                                <form method="post" asp-controller="Home"
+                                      asp-action="AgregarAColaApi" class="add-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@cancion.Id" />
+                                    <button class="add-button" type="submit"
+                                            title="Agregar a la cola"
+                                            aria-label="Agregar @cancion.Titulo a la cola">+</button>
+                                </form>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </section>
+    }
+
+    <section class="content-section" id="listas">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">PERSONALIZA TU ESCUCHA</p>
+                <h2>Listas de reproducción</h2>
+            </div>
+        </div>
+
+        <div class="playlist-placeholder">
+            <div class="playlist-plus">+</div>
+            <div>
+                <h3>Tus listas comienzan aquí</h3>
+                <p>En el siguiente paso añadiremos la creación de listas y la opción de guardar canciones en ellas.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="data-panels">
+        <article class="data-panel" id="cola">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">FIFO · FIRST IN, FIRST OUT</p>
+                    <h2>Cola de reproducción</h2>
+                </div>
+                <span class="counter" id="queue-count">@Model.Cola.Count</span>
+            </div>
+
+            <ol class="queue-list" id="queue-list">
+                @foreach (var cancion in Model.Cola)
+                {
+                    <li>
+                        <span>@cancion.Titulo</span>
+                        <small>@cancion.Artista</small>
+                    </li>
+                }
+            </ol>
+            @if (Model.Cola.Count == 0)
+            {
+                <p class="muted queue-empty">Agrega canciones desde la biblioteca.</p>
+            }
+        </article>
+
+        <article class="data-panel" id="historial">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">LIFO · LAST IN, FIRST OUT</p>
+                    <h2>Historial</h2>
+                </div>
+                <span class="counter" id="history-count">@Model.Historial.Count</span>
+            </div>
+
+            <ol class="queue-list" id="history-list">
+                @foreach (var cancion in Model.Historial)
+                {
+                    <li>
+                        <span>@cancion.Titulo</span>
+                        <small>@cancion.Artista</small>
+                    </li>
+                }
+            </ol>
+            @if (Model.Historial.Count == 0)
+            {
+                <p class="muted history-empty">Tus canciones anteriores aparecerán aquí.</p>
+            }
+        </article>
+    </section>
+
+    <footer class="page-footer">MusicLab · ASP.NET Core MVC · C#</footer>
+</div>
+
+@if (Model.Actual != null)
+{
+    <div id="current-audio" data-src="@Model.Actual.Archivo"></div>
+}
+
+<section class="player-dock" aria-label="Controles de reproducción">
+    <div class="dock-track">
+        <div class="dock-cover">♫</div>
+        <div class="dock-track-info">
+            <h3 id="current-title">@(Model.Actual?.Titulo ?? "Selecciona una canción")</h3>
+            <p id="current-artist">@(Model.Actual?.Artista ?? "Tu próxima canción te espera")</p>
+        </div>
+    </div>
+
+    <div class="dock-center">
+        <div class="dock-buttons">
+            <form method="post" asp-controller="Home" asp-action="AnteriorApi">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="dock-control" title="Anterior" aria-label="Anterior">|◀</button>
+            </form>
+
+            <button type="button" class="dock-play" id="play-pause-button"
+                    title="Reproducir o pausar" aria-label="Reproducir o pausar">▶</button>
+
+            <form method="post" asp-controller="Home" asp-action="SiguienteApi">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="dock-control" title="Siguiente" aria-label="Siguiente">▶|</button>
+            </form>
+        </div>
+
+        <div class="dock-progress">
+            <span id="current-time" class="dock-time">0:00</span>
+            <input id="progress-bar" type="range" min="0" max="1000" value="0"
+                   step="1" aria-label="Posición de reproducción" />
+            <span id="duration-time" class="dock-time">0:00</span>
+        </div>
+        <audio id="audio-player" data-initial-src="@(Model.Actual?.Archivo ?? string.Empty)" preload="metadata">
+            Tu navegador no admite la reproducción de audio.
+        </audio>
+    </div>
+
+    <div class="dock-extra">
+        <span class="dock-equalizer">♫</span>
+        <span>LOCAL PLAYER</span>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/musiclab.js" asp-append-version="true"></script>
+}
+
+
+
+
+

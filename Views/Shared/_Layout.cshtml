@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#090b0f" />
+    <title>@ViewData["Title"] - MusicLab</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MusicLab.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <iframe id="ambient-background" src="/background/index.html"
+            title="" aria-hidden="true" tabindex="-1"></iframe>
+
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="sidebar-brand" asp-controller="Home" asp-action="Index">
+                <span class="brand-symbol">M</span>
+                <span>Music<span class="accent-text">Lab</span></span>
+            </a>
+
+            <div class="sidebar-group">
+                <p class="sidebar-label">MENÚ PRINCIPAL</p>
+
+                <a class="sidebar-link active" asp-controller="Home" asp-action="Index">
+                    <span class="nav-icon">⌂</span> Inicio
+                </a>
+
+                <a class="sidebar-link" href="/#buscar">
+                    <span class="nav-icon">⌕</span> Buscar música
+                </a>
+            </div>
+
+            <div class="sidebar-group">
+                <p class="sidebar-label">TU BIBLIOTECA</p>
+
+                <a class="sidebar-link" href="/#canciones">
+                    <span class="nav-icon">♫</span> Canciones
+                </a>
+
+                <a class="sidebar-link" href="/#albumes">
+                    <span class="nav-icon">▤</span> Álbumes
+                </a>
+
+                <a class="sidebar-link" href="/#listas">
+                    <span class="nav-icon">☷</span> Listas de reproducción
+                </a>
+
+                <a class="sidebar-link" href="/#cola">
+                    <span class="nav-icon">≡</span> Cola de reproducción
+                </a>
+
+                <a class="sidebar-link" href="/#historial">
+                    <span class="nav-icon">◷</span> Historial
+                </a>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-status">
+                    <span class="status-dot"></span>
+                    <div>
+                        <strong>Biblioteca local</strong>
+                        <small>Reproducción desde tu PC</small>
+                    </div>
+                </div>
+                <span class="sidebar-version">MUSICLAB · CYAN EDITION</span>
+            </div>
+        </aside>
+
+        <main class="main-content" id="main-content">
+            @RenderBody()
+        </main>
+
+        <aside class="now-playing-sidebar" id="now-playing-sidebar"
+               aria-label="Canción actual">
+            <div class="now-playing-heading">
+                <span class="visualizer-live-dot"></span>
+                <span>REPRODUCIENDO AHORA</span>
+            </div>
+
+            <div class="now-playing-art">
+                <img id="visualizer-cover"
+                     src="/images/cover.svg"
+                     alt="Portada de la canción actual" />
+                <div class="cover-glow"></div>
+            </div>
+
+            <div class="now-playing-meta">
+                <h2 id="visualizer-title">Selecciona una canción</h2>
+                <p id="visualizer-artist">Tu biblioteca local</p>
+            </div>
+
+            <div class="visualizer-card">
+                <div class="visualizer-topline">
+                    <span>FREQUENCY SPECTRUM</span>
+                    <span class="visualizer-dot-label">LIVE</span>
+                </div>
+                <div class="audio-visualizer" id="audio-visualizer"
+                     role="img" aria-label="Visualizador de frecuencias de audio"></div>
+                <div class="visualizer-frequency-labels">
+                    <span>LOW</span>
+                    <span>MID</span>
+                    <span>HIGH</span>
+                </div>
+            </div>
+
+            <div class="visualizer-status">
+                <span class="status-equalizer">♫</span>
+                <div>
+                    <strong id="visualizer-status-text">LISTO PARA REPRODUCIR</strong>
+                    <small>LOCAL AUDIO ENGINE</small>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const ambientBackground = document.getElementById("ambient-background");
+        window.addEventListener("pointermove", event => {
+            ambientBackground.contentWindow?.postMessage({
+                type: "musiclab-pointer",
+                x: event.clientX,
+                y: event.clientY
+            }, location.origin);
+        });
+    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

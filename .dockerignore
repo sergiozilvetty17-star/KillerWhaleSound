@@ -1,0 +1,13 @@
+﻿.git
+.github
+.vs
+.idea
+.vscode
+**/bin/
+**/obj/
+**/*.user
+**/*.suo
+.env
+.env.*
+**/appsettings.Development.json
+**/appsettings.*.local.json

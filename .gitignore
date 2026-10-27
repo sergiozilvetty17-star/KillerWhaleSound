@@ -1,0 +1,13 @@
+﻿bin/
+obj/
+.vs/
+.idea/
+*.user
+*.suo
+.env
+.env.*
+appsettings.Development.json
+appsettings.*.local.json
+
+# Copias de seguridad locales
+*.bak
