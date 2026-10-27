@@ -111,10 +111,29 @@
 
             <div class="visualizer-status">
                 <span class="status-equalizer">♫</span>
+                <article class="data-panel" id="cola">
+            <div class="panel-heading">
                 <div>
-                    <strong id="visualizer-status-text">LISTO PARA REPRODUCIR</strong>
-                    <small>LOCAL AUDIO ENGINE</small>
+                    <p class="eyebrow">FIFO · FIRST IN, FIRST OUT</p>
+                    <h2>Cola de reproducción</h2>
                 </div>
+                <span class="counter" id="queue-count">@Model.Cola.Count</span>
+            </div>
+
+            <ol class="queue-list" id="queue-list">
+                @foreach (var cancion in Model.Cola)
+                {
+                    <li>
+                        <span>@cancion.Titulo</span>
+                        <small>@cancion.Artista</small>
+                    </li>
+                }
+            </ol>
+            @if (Model.Cola.Count == 0)
+            {
+                <p class="muted queue-empty">Agrega canciones desde la biblioteca.</p>
+            }
+        </article>
             </div>
         </aside>
     </div>

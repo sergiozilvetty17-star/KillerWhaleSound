@@ -22,14 +22,6 @@
     </header>
 
     <section class="hero" id="inicio">
-        <div class="hero-content">
-            <h1>Tu música.<br /><span>Tu universo.</span></h1>
-            <p class="description">
-                Toda tu biblioteca musical en un solo lugar.
-                Organizada y reproducida desde tu ordenador.
-            </p>
-            <a class="hero-button" href="#canciones">♫ Explorar canciones</a>
-        </div>
         <div class="hero-art" aria-hidden="true">
             <div class="hero-disc">
                 <div class="disc-center">M</div>
@@ -223,29 +215,7 @@
     </section>
 
     <section class="data-panels">
-        <article class="data-panel" id="cola">
-            <div class="panel-heading">
-                <div>
-                    <p class="eyebrow">FIFO · FIRST IN, FIRST OUT</p>
-                    <h2>Cola de reproducción</h2>
-                </div>
-                <span class="counter" id="queue-count">@Model.Cola.Count</span>
-            </div>
-
-            <ol class="queue-list" id="queue-list">
-                @foreach (var cancion in Model.Cola)
-                {
-                    <li>
-                        <span>@cancion.Titulo</span>
-                        <small>@cancion.Artista</small>
-                    </li>
-                }
-            </ol>
-            @if (Model.Cola.Count == 0)
-            {
-                <p class="muted queue-empty">Agrega canciones desde la biblioteca.</p>
-            }
-        </article>
+        
 
         <article class="data-panel" id="historial">
             <div class="panel-heading">
