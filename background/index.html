@@ -185,7 +185,7 @@ function resetIdleMovement() {
   idleMovementTimeout = setTimeout(function() {
     moveToRandomPoint();
     randomMovementInterval = setInterval(moveToRandomPoint, 500);
-  }, 3000);
+  }, 500);
 }
 
 window.addEventListener('message', function(event) {

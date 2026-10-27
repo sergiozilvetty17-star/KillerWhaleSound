@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#090b0f" />
-    <meta name="description" content="KillerWhaleSound: tu espacio personal para escuchar música." />
+    <meta name="description" content="KillerWhaleSound - Tu espacio personal para escuchar musica." />
     <link rel="manifest" href="~/manifest.webmanifest" asp-append-version="true" />
     <link rel="icon" type="image/png" sizes="192x192" href="~/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="~/icons/icon-192.png" />
@@ -25,14 +25,14 @@
             </a>
 
             <div class="sidebar-group">
-                <p class="sidebar-label">MENÃš PRINCIPAL</p>
+                <p class="sidebar-label">MENÚ PRINCIPAL</p>
 
                 <a class="sidebar-link active" asp-controller="Home" asp-action="Index">
-                    <span class="nav-icon">âŒ‚</span> Inicio
+                    <span class="nav-icon">⌂</span> Inicio
                 </a>
 
                 <a class="sidebar-link" href="/#buscar">
-                    <span class="nav-icon">âŒ•</span> Buscar mÃºsica
+                    <span class="nav-icon">⌕</span> Buscar música
                 </a>
             </div>
 
@@ -40,23 +40,23 @@
                 <p class="sidebar-label">TU BIBLIOTECA</p>
 
                 <a class="sidebar-link" href="/#canciones">
-                    <span class="nav-icon">â™«</span> Canciones
+                    <span class="nav-icon">♫</span> Canciones
                 </a>
 
                 <a class="sidebar-link" href="/#albumes">
-                    <span class="nav-icon">â–¤</span> Ãlbumes
+                    <span class="nav-icon">▤</span> Álbumes
                 </a>
 
                 <a class="sidebar-link" href="/#listas">
-                    <span class="nav-icon">â˜·</span> Listas de reproducciÃ³n
+                    <span class="nav-icon">☷</span> Listas de reproducción
                 </a>
 
                 <a class="sidebar-link" href="/#cola">
-                    <span class="nav-icon">â‰¡</span> Cola de reproducciÃ³n
+                    <span class="nav-icon">≡</span> Cola de reproducción
                 </a>
 
                 <a class="sidebar-link" href="/#historial">
-                    <span class="nav-icon">â—·</span> Historial
+                    <span class="nav-icon">◷</span> Historial
                 </a>
             </div>
 
@@ -65,10 +65,10 @@
                     <span class="status-dot"></span>
                     <div>
                         <strong>Biblioteca local</strong>
-                        <small>ReproducciÃ³n desde tu PC</small>
+                        <small>Reproducción desde tu PC</small>
                     </div>
                 </div>
-                <span class="sidebar-version">MUSICLAB Â· CYAN EDITION</span>
+                <span class="sidebar-version">KILLERWHALESOUND - CYAN EDITION</span>
             </div>
         </aside>
 
@@ -77,7 +77,7 @@
         </main>
 
         <aside class="now-playing-sidebar" id="now-playing-sidebar"
-               aria-label="CanciÃ³n actual">
+               aria-label="Canción actual">
             <div class="now-playing-heading">
                 <span class="visualizer-live-dot"></span>
                 <span>REPRODUCIENDO AHORA</span>
@@ -86,12 +86,12 @@
             <div class="now-playing-art">
                 <img id="visualizer-cover"
                      src="/images/cover.svg"
-                     alt="Portada de la canciÃ³n actual" />
+                     alt="Portada de la canción actual" />
                 <div class="cover-glow"></div>
             </div>
 
             <div class="now-playing-meta">
-                <h2 id="visualizer-title">Selecciona una canciÃ³n</h2>
+                <h2 id="visualizer-title">Selecciona una canción</h2>
                 <p id="visualizer-artist">Tu biblioteca local</p>
             </div>
 
@@ -110,7 +110,7 @@
             </div>
 
             <div class="visualizer-status">
-                <span class="status-equalizer">â™«</span>
+                <span class="status-equalizer">♫</span>
                 <div>
                     <strong id="visualizer-status-text">LISTO PARA REPRODUCIR</strong>
                     <small>LOCAL AUDIO ENGINE</small>
@@ -131,11 +131,14 @@
     </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
     <script>
         if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
+            window.addEventListener("load", function () {
                 navigator.serviceWorker.register("/service-worker.js")
-                    .catch(error => console.error("PWA: registro fallido", error));
+                    .catch(function (error) {
+                        console.error("No se pudo registrar el service worker:", error);
+                    });
             });
         }
     </script>

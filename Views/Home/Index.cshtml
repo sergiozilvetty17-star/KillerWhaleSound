@@ -23,7 +23,6 @@
 
     <section class="hero" id="inicio">
         <div class="hero-content">
-            <p class="eyebrow">MUSICLAB · CYAN EDITION</p>
             <h1>Tu música.<br /><span>Tu universo.</span></h1>
             <p class="description">
                 Toda tu biblioteca musical en un solo lugar.
@@ -128,7 +127,6 @@
                        href="@Url.Action("Index", "Home", new { album = album.Key, buscar = Model.Busqueda })">
                         <div class="album-art">
                             <span>♫</span>
-                            <div class="album-art-caption">MUSICLAB</div>
                         </div>
                         <h3>@album.Key</h3>
                         <p>@(album.Count()) canciones</p>
@@ -274,7 +272,6 @@
         </article>
     </section>
 
-    <footer class="page-footer">MusicLab · ASP.NET Core MVC · C#</footer>
 </div>
 
 @if (Model.Actual != null)
